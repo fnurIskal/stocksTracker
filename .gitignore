@@ -1,0 +1,45 @@
+# Build çıktıları
+bin/
+obj/
+
+# Visual Studio dosyaları
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Visual Studio Code
+.vscode/
+
+# Rider (JetBrains)
+.idea/
+
+# NuGet
+*.nupkg
+packages/
+project.lock.json
+
+# Veritabanı dosyası (SQLite)
+*.db
+*.db-shm
+*.db-wal
+
+# API Key ve hassas bilgiler
+appsettings.json
+appsettings.Development.json
+
+# Sadece örnek dosyayı paylaş
+!appsettings.example.json
+
+# Log dosyaları
+*.log
+logs/
+
+# OS dosyaları
+.DS_Store
+Thumbs.db
+
+# Test sonuçları
+TestResults/
+coverage/
