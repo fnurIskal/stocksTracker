@@ -1,11 +1,30 @@
+using Microsoft.EntityFrameworkCore;
+using stocksTracker.Data;
+using stocksTracker.Interfaces;
+using stocksTracker.Models;
+using stocksTracker.Repository;
+using stocksTracker.Services;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddDbContext<ApplicationDBContext>(options =>
+{
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+});
+
+builder.Services.AddScoped<IStockRepository,StockRepository>();
+
+builder.Services.Configure<FinnhubSettings>(builder.Configuration.GetSection("FinnhubSettings"));
+
+builder.Services.AddHttpClient<IFinnhubService, FinnhubService>();
+
+builder.Services.AddScoped<IStockRepository, StockRepository>();
+
 
 var app = builder.Build();
 

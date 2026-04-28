@@ -1,0 +1,89 @@
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using stocksTracker.Data;
+using stocksTracker.Dtos.Stock;
+using stocksTracker.Interfaces;
+using stocksTracker.Mappers;
+
+namespace stocksTracker.Controllers
+{
+    [Route("api/stock")]
+    [ApiController]
+    public class StockController : ControllerBase
+    {
+        private readonly IStockRepository _stockRepo;
+        private readonly IFinnhubService _finnhubService;
+        public StockController(IStockRepository stockRepo, IFinnhubService finnhubService)
+        {
+            _stockRepo = stockRepo;
+            _finnhubService = finnhubService;
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAll()
+        {
+            var stocks = await _stockRepo.GetAllAsync();
+            var stockDtos = stocks.Select(s => s.ToStockDto());
+            return Ok(stockDtos);
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetById([FromRoute] int id)
+        {
+            var stock = await _stockRepo.GetByIdAsync(id);
+
+            if (stock == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(stock.ToStockDto());
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Create([FromBody] CreateStockRequestDto stockDto)
+        {
+
+            var quote = await _finnhubService.GetQuoteAsync(stockDto.Symbol);
+
+            if (quote == null)
+                return BadRequest("Hisse senedi bulunamadı veya API hatası oluştu.");
+
+            // DTO'dan model oluştur, fiyat bilgilerini Finnhub'dan doldur
+            var stock = stockDto.ToStockFromCreateDto();
+            stock.CurrentPrice = quote.CurrentPrice ?? 0;
+            stock.CurrentPrice = quote.CurrentPrice ?? 0;
+            stock.Change = quote.Change ?? 0;
+            stock.ChangePercent = quote.ChangePercent ?? 0;
+            stock.HighPrice = quote.HighPrice ?? 0;
+            stock.LowPrice = quote.LowPrice ?? 0;
+
+            await _stockRepo.CreateAsync(stock);
+
+            return CreatedAtAction(nameof(GetById), new { id = stock.Id }, stock.ToStockDto());
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateStockRequestDto updateDto )
+        {
+            var stock = await _stockRepo.UpdateAsync(id, updateDto);
+            if (stock == null)
+            {
+                return NotFound();
+            }
+            return Ok(stock.ToStockDto());
+
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete([FromRoute] int id)
+        {
+            var stock = await _stockRepo.DeleteAsync(id);
+            if (stock == null)
+            {
+            return NotFound(); 
+            }
+            return NoContent();
+        }
+    }
+}
