@@ -26,6 +26,12 @@ namespace stocksTracker.Repository
             return stockModel;
         }
 
+        public async Task<Stock> RefreshAsync(int id)
+        {
+            var stock = await _context.Stock.FindAsync(id);
+            if (stock == null) return null;
+            return stock;
+        }
         public async Task<Stock?> DeleteAsync(int id)
         {
             var stockModel = await _context.Stock.FirstOrDefaultAsync(x => x.Id == id);
@@ -44,27 +50,36 @@ namespace stocksTracker.Repository
         {
             return await _context.Stock.FindAsync(id);
         }
-
-        public async Task<Stock?> UpdateAsync(int id, UpdateStockRequestDto stockDto)
+        public async Task SaveChangesAsync()
         {
-            var existingStock = await _context.Stock.FirstOrDefaultAsync(x => x.Id == id);
-
-            if (existingStock == null)
-            {
-                return null;
-            }
-
-            existingStock.Symbol = stockDto.Symbol;
-            existingStock.CompanyName = stockDto.CompanyName;
-            existingStock.CurrentPrice = stockDto.CurrentPrice;
-            existingStock.Change = stockDto.Change;
-            existingStock.ChangePercent = stockDto.ChangePercent;
-            existingStock.HighPrice = stockDto.HighPrice;
-            existingStock.LowPrice = stockDto.LowPrice;
-
             await _context.SaveChangesAsync();
-
-            return existingStock;
         }
+
+        public async Task<List<Stock>> GetTopGainersAsync(int count)
+        {
+            return await _context.Stock
+                .OrderByDescending(s => s.ChangePercent)
+                .Take(count)
+                .ToListAsync();
+        }
+
+        public async Task<StockSummaryDto> GetSummaryAsync()
+        {
+            var stocks = await _context.Stock.ToListAsync();
+
+            if (!stocks.Any())
+                return new StockSummaryDto();
+
+            return new StockSummaryDto
+            {
+                TotalStocks = stocks.Count,
+                AveragePrice = stocks.Average(s => s.CurrentPrice),
+                TotalValue = stocks.Sum(s => s.CurrentPrice),
+                BestPerformer = stocks.OrderByDescending(s => s.ChangePercent).First().Symbol,
+                WorstPerformer = stocks.OrderBy(s => s.ChangePercent).First().Symbol
+            };
+        }
+
+
     }
 }

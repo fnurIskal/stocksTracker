@@ -42,3 +42,18 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
+// Global exception handler
+app.UseExceptionHandler(appError =>
+{
+    appError.Run(async context =>
+    {
+        context.Response.StatusCode = 500;
+        context.Response.ContentType = "application/json";
+        await context.Response.WriteAsJsonAsync(new
+        {
+            status = 500,
+            error = "Unexpected Error"
+        });
+    });
+});

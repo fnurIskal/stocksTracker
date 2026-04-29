@@ -8,7 +8,10 @@ namespace stocksTracker.Interfaces
         Task<List<Stock>> GetAllAsync();
         Task<Stock?> GetByIdAsync(int id);
         Task<Stock> CreateAsync(Stock stockModel);
-        Task<Stock?> UpdateAsync(int id, UpdateStockRequestDto stockDto);
+        Task<Stock> RefreshAsync(int id);
         Task<Stock> DeleteAsync(int id);
+        Task SaveChangesAsync();
+        Task<List<Stock>> GetTopGainersAsync(int count);
+        Task<StockSummaryDto> GetSummaryAsync();
     }
 }

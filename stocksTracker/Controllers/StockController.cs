@@ -63,16 +63,24 @@ namespace stocksTracker.Controllers
             return CreatedAtAction(nameof(GetById), new { id = stock.Id }, stock.ToStockDto());
         }
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateStockRequestDto updateDto )
+        [HttpPut("{id}/refresh")]
+        public async Task<IActionResult> Refresh([FromRoute] int id)
         {
-            var stock = await _stockRepo.UpdateAsync(id, updateDto);
-            if (stock == null)
-            {
-                return NotFound();
-            }
-            return Ok(stock.ToStockDto());
+            var stock = await _stockRepo.RefreshAsync(id);
+            if (stock == null) return NotFound();
 
+            var quote = await _finnhubService.GetQuoteAsync(stock.Symbol);
+            if (quote == null) return BadRequest();
+
+            stock.CurrentPrice = quote.CurrentPrice ?? 0;
+            stock.Change = quote.Change ?? 0;
+            stock.ChangePercent = quote.ChangePercent ?? 0;
+            stock.HighPrice = quote.HighPrice ?? 0;
+            stock.LowPrice = quote.LowPrice ?? 0;
+
+            await _stockRepo.SaveChangesAsync();
+
+            return Ok(stock.ToStockDto());
         }
 
         [HttpDelete("{id}")]
@@ -85,5 +93,19 @@ namespace stocksTracker.Controllers
             }
             return NoContent();
         }
+        [HttpGet("analytics/top-gainers")]
+        public async Task<IActionResult> GetTopGainers([FromQuery] int count = 5)
+        {
+            var stocks = await _stockRepo.GetTopGainersAsync(count);
+            return Ok(stocks.Select(s => s.ToStockDto()));
+        }
+
+        [HttpGet("analytics/summary")]
+        public async Task<IActionResult> GetSummary()
+        {
+            var summary = await _stockRepo.GetSummaryAsync();
+            return Ok(summary);
+        }
+
     }
 }
