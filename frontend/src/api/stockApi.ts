@@ -1,4 +1,4 @@
-const BASE_URL = "https://localhost:7227/api/stock";
+const BASE_URL = `/api/stock`;
 
 export const getAllStocks = async () => {
   const res = await fetch(`${BASE_URL}`);

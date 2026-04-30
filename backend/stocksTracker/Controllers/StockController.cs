@@ -47,13 +47,14 @@ namespace stocksTracker.Controllers
             if (exists)
                 return Conflict("This stock is already in your watchlist.");
 
-            var quote = await _finnhubService.GetQuoteAsync(stockDto.Symbol);
+            var quote = await _finnhubService.GetQuoteAsync(stockDto.Symbol.ToUpper());
             if (quote == null)
                 return BadRequest("Stock not found or API error occurred.");
 
 
 
             var stock = stockDto.ToStockFromCreateDto();
+            stock.Symbol = stockDto.Symbol.ToUpper();
             stock.CurrentPrice = quote.CurrentPrice ?? 0;
             stock.CurrentPrice = quote.CurrentPrice ?? 0;
             stock.Change = quote.Change ?? 0;
