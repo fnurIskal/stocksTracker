@@ -28,7 +28,7 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
       - ConnectionStrings__DefaultConnection=Server=db;Database=stocksTracker;User
         Id=sa;Password=StrongPassword123!;TrustServerCertificate=True
-      - FinnhubSettings__ApiKey=d7oapfhr01qsb7be8jk0d7oapfhr01qsb7be8jkg
+      - FinnhubSettings__ApiKey=YOUR_API_KEY # Replace with your Finnhub API key
       - FinnhubSettings__BaseUrl=https://finnhub.io/api/v1
     depends_on:
       db:

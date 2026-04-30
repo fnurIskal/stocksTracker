@@ -5,6 +5,8 @@ VisualStudioVersion = 17.10.35013.160
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "stocksTracker", "stocksTracker\stocksTracker.csproj", "{10F43712-CE76-428B-811E-581CC757A6E4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "stocksTracker.Tests", "stocksTracker.Tests\stocksTracker.Tests.csproj", "{44265241-1E32-45C2-A33B-13BF96BF5B8F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{10F43712-CE76-428B-811E-581CC757A6E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{10F43712-CE76-428B-811E-581CC757A6E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{10F43712-CE76-428B-811E-581CC757A6E4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{44265241-1E32-45C2-A33B-13BF96BF5B8F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{44265241-1E32-45C2-A33B-13BF96BF5B8F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{44265241-1E32-45C2-A33B-13BF96BF5B8F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{44265241-1E32-45C2-A33B-13BF96BF5B8F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
