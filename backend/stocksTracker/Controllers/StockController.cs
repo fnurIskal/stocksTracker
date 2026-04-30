@@ -13,6 +13,8 @@ namespace stocksTracker.Controllers
     {
         private readonly IStockRepository _stockRepo;
         private readonly IFinnhubService _finnhubService;
+
+        // Dependency Injection: Dependencies are injected via constructor
         public StockController(IStockRepository stockRepo, IFinnhubService finnhubService)
         {
             _stockRepo = stockRepo;

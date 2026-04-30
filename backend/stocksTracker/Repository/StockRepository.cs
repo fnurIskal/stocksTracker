@@ -6,6 +6,8 @@ using stocksTracker.Models;
 
 namespace stocksTracker.Repository
 {
+    // Repository Pattern: Abstracts data access logic from business logic
+    // Controller communicates with DB only through this interface
     public class StockRepository : IStockRepository
     {
         private readonly ApplicationDBContext _context;
